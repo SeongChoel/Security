@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class ApiV1PostController {
     private final Rq rq;
 
     @GetMapping
+    @Transactional(readOnly = true)
     public RsData<PageDto> getItems(@RequestParam(defaultValue = "1") int page,
                                     @RequestParam(defaultValue = "3") int pageSize,
                                     @RequestParam(defaultValue = "title") String keywordType,
@@ -39,6 +41,7 @@ public class ApiV1PostController {
 
 
     @GetMapping("/mine")
+    @Transactional(readOnly = true)
     public RsData<PageDto> getMines(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "3") int pageSize,
@@ -57,6 +60,7 @@ public class ApiV1PostController {
     }
 
     @GetMapping("{id}")
+    @Transactional(readOnly = true)
     public RsData<PostWithContentDto> getItem(@PathVariable long id) {
 
         Post post = postService.getItem(id).orElseThrow(
@@ -82,6 +86,7 @@ public class ApiV1PostController {
     }
 
     @PostMapping
+    @Transactional
     public RsData<PostWithContentDto> write(@RequestBody @Valid WriteReqBody reqBody) {
 
         Member actor = rq.getAuthenticatedActor();
@@ -98,6 +103,7 @@ public class ApiV1PostController {
     }
 
     @PutMapping("{id}")
+    @Transactional
     public RsData<PostWithContentDto> modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody reqBody) {
 
         Member actor = rq.getAuthenticatedActor();
