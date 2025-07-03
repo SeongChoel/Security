@@ -51,7 +51,7 @@ public class ApiV1PostController {
             @RequestParam(defaultValue = "") String keyword
     ) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
         Page<Post> pagePost = postService.getMines(actor, page, pageSize, keywordType, keyword);
 
         return new RsData<>("200-1",
@@ -70,7 +70,7 @@ public class ApiV1PostController {
         );
 
         if (!post.isPublished()) {
-            Member actor = rq.getAuthenticatedActor(); //
+            Member actor = rq.getActor();
             post.canRead(actor);
         }
 
@@ -108,7 +108,7 @@ public class ApiV1PostController {
     @Transactional
     public RsData<PostWithContentDto> modify(@PathVariable long id, @RequestBody @Valid ModifyReqBody reqBody) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
 
         Post post = postService.getItem(id).orElseThrow(
                 () -> new ServiceException("404-1", "존재하지 않는 글입니다.")
@@ -127,7 +127,7 @@ public class ApiV1PostController {
     @DeleteMapping("{id}")
     public RsData<Void> delete(@PathVariable long id) {
 
-        Member actor = rq.getAuthenticatedActor();
+        Member actor = rq.getActor();
 
         Post post = postService.getItem(id).orElseThrow(
                 () -> new ServiceException("404-1", "존재하지 않는 글입니다.")
